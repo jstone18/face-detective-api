@@ -10,7 +10,6 @@ const db = {
 			id: "1",
 			name: "John",
 			email: "john@gmail.com",
-			password: "foobar123",
 			entries: 0,
 			joined: new Date()
 		},
@@ -18,9 +17,15 @@ const db = {
 			id: "2",
 			name: "Jane",
 			email: "jane@gmail.com",
-			password: "foobaz123",
 			entries: 0,
 			joined: new Date()
+		}
+	],
+	login: [
+		{
+			id: 123,
+			hash: "",
+			email: "john@gmail.com"
 		}
 	]
 };
@@ -65,6 +70,21 @@ app.get("/profile/:id", (req, res) => {
 		if (user.id === id) {
 			found = true;
 			return res.json(user);
+		}
+	});
+	if (!found) {
+		res.status(400).json("not found");
+	}
+});
+
+app.post("/images", (req, res) => {
+	const { id } = req.body;
+	let found = false;
+	db.users.forEach(user => {
+		if (user.id === id) {
+			found = true;
+			user.entries++;
+			return res.json(user.entries);
 		}
 	});
 	if (!found) {
