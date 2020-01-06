@@ -1,6 +1,17 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
+const knex = require("knex");
+
+knex({
+	client: "pg",
+	connection: {
+		host: "127.0.0.1",
+		user: "macbookpro",
+		password: "",
+		database: "face-detective"
+	}
+});
 
 const app = express();
 
