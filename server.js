@@ -28,13 +28,6 @@ const db = {
 			entries: 0,
 			joined: new Date()
 		}
-	],
-	login: [
-		{
-			id: 123,
-			hash: "",
-			email: "john@gmail.com"
-		}
 	]
 };
 
