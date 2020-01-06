@@ -56,16 +56,6 @@ app.get("/", (req, res) => {
 
 // Signin Route
 app.post("/signin", (req, res) => {
-	// Load hash from your password DB.
-	bcrypt.compare(
-		"cookies",
-		"$2b$10$ZjTgA/oegIotqkXF7wmAL.8plU6cmSgHJiZGz40iLzyrH8r.Mjuqy",
-		function(err, res) {
-			// res == true
-			console.log("first guess", res);
-		}
-	);
-
 	if (
 		req.body.email === db.users[0].email &&
 		req.body.password === db.users[0].password
@@ -74,21 +64,45 @@ app.post("/signin", (req, res) => {
 	} else {
 		res.status(400).json("error logging in");
 	}
-	res.json("signin");
 });
 
 // Register Route
 app.post("/register", (req, res) => {
 	const { name, email, password } = req.body;
-	database("users")
-		.returning("*")
-		.insert({
-			email: email,
-			name: name,
-			joined: new Date()
-		})
-		.then(user => {
-			res.json(user[0]);
+	const hash = bcrypt.hashSync(password, saltRounds);
+	database
+		// Create a transaction for more than 2 commits at once to db
+		.transaction(trx => {
+			// use trx object instead of 'database' object to perform operations
+			trx
+				// insert into 'login' db
+				.insert({
+					hash: hash,
+					email: email
+				})
+				.into("login")
+				// return email
+				.returning("email")
+				.then(loginEmail => {
+					// use loginEMail to return another trx transaction object
+					return (
+						trx("users")
+							.returning("*")
+							// insert into users db
+							.insert({
+								email: loginEmail[0],
+								name: name,
+								joined: new Date()
+							})
+							.then(user => {
+								// respond with json
+								res.json(user[0]);
+							})
+					);
+				})
+				// commit to db or catch any errors and rollback
+				.then(trx.commit)
+				.catch(trx.rollback);
 		})
 		.catch(err => res.status(400).json("unable to register"));
 });
