@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const knex = require("knex");
 
-knex({
+const database = knex({
 	client: "pg",
 	connection: {
 		host: "127.0.0.1",
@@ -12,6 +12,13 @@ knex({
 		database: "face-detective"
 	}
 });
+
+database
+	.select("*")
+	.from("users")
+	.then(data => {
+		console.log(data);
+	});
 
 const app = express();
 
@@ -73,21 +80,17 @@ app.post("/signin", (req, res) => {
 // Register Route
 app.post("/register", (req, res) => {
 	const { name, email, password } = req.body;
-
-	// Bcrypt
-	bcrypt.hash(password, saltRounds, function(err, hash) {
-		// Store hash in your password DB.
-		console.log(hash);
-	});
-
-	db.users.push({
-		id: "3",
-		name: name,
-		email: email,
-		entries: 0,
-		joined: new Date()
-	});
-	res.json(db.users[db.users.length - 1]);
+	database("users")
+		.returning("*")
+		.insert({
+			email: email,
+			name: name,
+			joined: new Date()
+		})
+		.then(user => {
+			res.json(user[0]);
+		})
+		.catch(err => res.status(400).json("unable to register"));
 });
 
 // Profile
