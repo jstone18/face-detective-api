@@ -13,41 +13,11 @@ const database = knex({
 	}
 });
 
-// database
-// 	.select("*")
-// 	.from("users")
-// 	.then(data => {
-// 		console.log(data);
-// 	});
-
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(cors());
-
-const saltRounds = 10;
-
-const db = {
-	users: [
-		{
-			id: "1",
-			name: "John",
-			password: "cookies",
-			email: "john@gmail.com",
-			entries: 0,
-			joined: new Date()
-		},
-		{
-			id: "2",
-			name: "Jane",
-			password: "apples",
-			email: "jane@gmail.com",
-			entries: 0,
-			joined: new Date()
-		}
-	]
-};
 
 // Root Route
 app.get("/", (req, res) => {
@@ -154,11 +124,3 @@ app.post("/image", (req, res) => {
 app.listen(3000, () => {
 	console.log("app is running on port 3000");
 });
-
-/*
-/ --> GET response = this is working
-/signin --> POST(to hide password) response = success/fail
-/register --> POST response = user object
-/profile/:userId --> GET response = user
-/image --> PUT response = updated user
-*/
