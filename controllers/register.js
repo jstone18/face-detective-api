@@ -1,5 +1,8 @@
 const handleRegister = (req, res, database, bcrypt, saltRounds) => {
 	const { name, email, password } = req.body;
+	if (!name || !email || !password) {
+		return res.status(400).json("incorrect form submission");
+	}
 	const hash = bcrypt.hashSync(password, saltRounds);
 	database
 		// Create a transaction for more than 2 commits at once to db
