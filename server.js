@@ -19,6 +19,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const saltRounds = 10;
+
 // Root Route
 app.get("/", (req, res) => {
 	res.send(db.users);
@@ -124,3 +126,11 @@ app.post("/image", (req, res) => {
 app.listen(3000, () => {
 	console.log("app is running on port 3000");
 });
+
+/*
+/ --> GET response = this is working
+/signin --> POST(to hide password) response = success/fail
+/register --> POST response = user object
+/profile/:userId --> GET response = user
+/image --> PUT response = updated user
+*/
