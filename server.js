@@ -50,6 +50,11 @@ app.post("/image", (req, res) => {
 	image.handleImage(req, res, database);
 });
 
+// Clarifai API Route
+app.post("/imageurl", (req, res) => {
+	image.handleApiCall(req, res);
+});
+
 app.listen(3000, () => {
 	console.log("app is running on port 3000");
 });
