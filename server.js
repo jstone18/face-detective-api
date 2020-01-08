@@ -27,7 +27,7 @@ const saltRounds = 10;
 
 // Root Route
 app.get("/", (req, res) => {
-	res.send(db.users);
+	res.send("it is working!");
 });
 
 // Signin Route
