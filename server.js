@@ -10,7 +10,7 @@ const image = require("./controllers/image");
 const database = knex({
 	client: "pg",
 	connection: {
-		host: "127.0.0.1",
+		host: "postgresql-transparent-07386",
 		user: "macbookpro",
 		password: "",
 		database: "face-detective"
